@@ -1,0 +1,30 @@
+{
+  "name": "videorender",
+  "version": "1.0.0",
+  "description": "thhis make video with after efffects",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aBaldoqui/videorender.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aBaldoqui/videorender/issues"
+  },
+  "homepage": "https://github.com/aBaldoqui/videorender#readme",
+  "dependencies": {
+    "@google-cloud/storage": "^6.5.2",
+    "after-effects": "^0.4.15",
+    "get-video-duration": "^4.1.0",
+    "gm": "^1.25.0",
+    "image-downloader": "^4.3.0",
+    "readline-sync": "^1.4.10",
+    "sharp": "^0.31.1",
+    "ytdl-core": "^4.11.2"
+  }
+}
