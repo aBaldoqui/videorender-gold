@@ -109,4 +109,4 @@ dist
 *.mp4
 /keys/*.json
 /tmp/*.json
-/tmp/*
+# /tmp/
