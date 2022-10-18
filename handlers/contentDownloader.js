@@ -4,15 +4,22 @@ const path = require('path');
 const sharp = require('sharp');
 
 const download = require('image-downloader');
-const { TIMEOUT } = require('dns');
 let index = 0;
 
-async function imgDownloader(arrayOfperiods) {
+async function imgDownloader(content) {
+    const arrayOfperiods = content.continuista
 
-
-
+    fs.stat(`./tmp/${content.vidName}`, (err) => {
+        if (!err) {
+            fs.rmSync(`./tmp/${content.vidName}`, { recursive: true, force: true })
+            fs.mkdirSync(`./tmp/${content.vidName}`, { force: true })
+        } else {
+            fs.mkdirSync(`./tmp/${content.vidName}`, { force: true })
+        }
+    })
 
     return await Promise.all(arrayOfperiods.map(async (period) => {
+        console.log(period.meta)
         const resArr = []
         let done = false
 
@@ -21,19 +28,20 @@ async function imgDownloader(arrayOfperiods) {
         //     if (!done) return resArr
         // }, 1.2 * 1000 * 60); //1 minutos e 12 segundos
 
-        fs.stat(`./tmp/${period.meta}`, (err) => {
+        fs.stat(`./tmp/${content.vidName}/${period.meta}`, (err) => {
             if (!err) {
-                fs.rmSync(`./tmp/${period.meta}`, { recursive: true, force: true })
-                fs.mkdirSync(`./tmp/${period.meta}`, { force: true })
+                fs.rmSync(`./tmp/${content.vidName}/${period.meta}`, { recursive: true, force: true })
+                fs.mkdirSync(`./tmp/${content.vidName}/${period.meta}`, { force: true })
             } else {
-                fs.mkdirSync(`./tmp/${period.meta}`, { force: true })
+                fs.mkdirSync(`./tmp/${content.vidName}/${period.meta}`, { force: true })
             }
         })
 
-        
+
 
         if (period.images.length === 0) {
-            return {meta:period.meta, arr:null}
+            console.log(period.imagesm, "puta merda junin")
+            return { meta: period.meta, arr: null }
         }
 
         let i = 0
@@ -43,18 +51,18 @@ async function imgDownloader(arrayOfperiods) {
                 if (image) {
                     const options = {
                         url: image[0],
-                        dest: path.resolve('tmp', period.meta, `original${period.meta}(${index}).png`),               // will be saved to /path/to/dest/image.jpg
+                        dest: path.resolve('tmp', content.vidName, period.meta, `original${period.meta}(${index}).png`),               // will be saved to /path/to/dest/image.jpg
                     };
                     index++
 
                     const downloadedImg = await download.image(options).catch((e) => {
-                        console.log(e)
+                        console.log('download err')
                     })
 
                     if (downloadedImg) {
-                        setTimeout(()=>{
-                            res({meta:period.meta, arr:null})
-                        },0.5*1000*60)
+                        setTimeout(() => {
+                            res({ meta: period.meta, arr: null })
+                        }, 0.5 * 1000 * 60)
                         sharp(downloadedImg.filename)
                             .resize(960, 540)
                             .toFile(downloadedImg.filename.replace('original', 'converted'), (err, info) => {
@@ -65,7 +73,6 @@ async function imgDownloader(arrayOfperiods) {
                             });
                     }
 
-                    console.log(i, period.images.length)
                     if (i == period.images.length) {
                         console.log(period.meta)
                         res({ meta: period.meta, arr: resArr })

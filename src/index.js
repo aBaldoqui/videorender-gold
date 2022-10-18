@@ -8,9 +8,9 @@ async function index() {
     try {
         const content = await handlers.gcs.contentDownloader(inputFileName)
         const fileOutput = await handlers.contentDownloader.audioDld(content.vidUrl)
-        await handlers.contentDownloader.imgDownloader(content.continuista).then(res => {
+        await handlers.contentDownloader.imgDownloader(content).then(res => {
             console.log('?')
-            handlers.vidcreate(content, fileOutput, res, bg)
+            handlers.vidcreate(content, fileOutput, res, bg, `~/Documents/dev/videorender-gold/tmp/${content.vidName}`)
         })
 
     } catch (err) {

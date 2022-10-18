@@ -5,7 +5,7 @@ const { getVideoDurationInSeconds } = require('get-video-duration')
 
 //https://ae-scripting.docsforadobe.dev/other/importoptions.html#importoptions
 
-async function index(contentObj, audioFileName, arrOfLocalImgs, bg) {
+async function index(contentObj, audioFileName, arrOfLocalImgs, bg, tmppath) {
     try {
         console.log(arrOfLocalImgs)
 
@@ -17,7 +17,7 @@ async function index(contentObj, audioFileName, arrOfLocalImgs, bg) {
 
         ae.execute((contentObj, audioFileName, videoDuration, arrOfLocalImgs, backgroundFile) => {
             try {
-                const audioFile = `~/Documents/dev/videorender/tmp/${audioFileName.filename}`;
+                const audioFile = `${tmppath}/${audioFileName.filename}`;
                 const projectName = contentObj.vidName;
                 const outputFolder = "~/Desktop";
                 const importAudioOptions = new ImportOptions();
