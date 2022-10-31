@@ -50,7 +50,7 @@ async function imgDownloader(content) {
                 i++
                 if (image) {
                     const options = {
-                        url: image[0],
+                        url: image.url[0],
                         dest: path.resolve('tmp', content.vidName, period.meta, `original${period.meta}(${index}).png`),               // will be saved to /path/to/dest/image.jpg
                     };
                     index++
@@ -63,20 +63,22 @@ async function imgDownloader(content) {
                         setTimeout(() => {
                             res({ meta: period.meta, arr: null })
                         }, 0.5 * 1000 * 60)
+
                         sharp(downloadedImg.filename)
                             .resize(960, 540)
                             .toFile(downloadedImg.filename.replace('original', 'converted'), (err, info) => {
                                 if (err) { console.log('error', period.meta) } else {
-                                    const resObj = { filename: downloadedImg.filename.replace('original', 'converted') }
+                                    const resObj = { filename: downloadedImg.filename.replace('original', 'converted'), startTime : image.startTime}
                                     resArr.push(resObj)
                                 }
                             });
                     }
 
-                    if (i == period.images.length) {
-                        console.log(period.meta)
-                        res({ meta: period.meta, arr: resArr })
-                    }
+
+                }
+                if (i == period.images.length) {
+                    console.log(period.meta)
+                    res({ meta: period.meta, arr: resArr })
                 }
             }
         })

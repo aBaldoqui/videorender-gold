@@ -5,7 +5,7 @@ const { getVideoDurationInSeconds } = require('get-video-duration')
 
 //https://ae-scripting.docsforadobe.dev/other/importoptions.html#importoptions
 
-async function index(contentObj, audioFileName, arrOfLocalImgs, bg, tmppath) {
+async function index(contentObj, audioFileName, arrOfLocalImgs, bg) {
     try {
         console.log(arrOfLocalImgs)
 
@@ -17,7 +17,7 @@ async function index(contentObj, audioFileName, arrOfLocalImgs, bg, tmppath) {
 
         ae.execute((contentObj, audioFileName, videoDuration, arrOfLocalImgs, backgroundFile) => {
             try {
-                const audioFile = `${tmppath}/${audioFileName.filename}`;
+                const audioFile = `~/Documents/dev/videorender-gold/tmp/${audioFileName.filename}`;
                 const projectName = contentObj.vidName;
                 const outputFolder = "~/Desktop";
                 const importAudioOptions = new ImportOptions();
@@ -47,20 +47,9 @@ async function index(contentObj, audioFileName, arrOfLocalImgs, bg, tmppath) {
                                 const newLayer = comp.layers.add(img)
 
                                 let per0;
-                                let per1;
+                                let per1;                              
 
-                                let min = 0.0
-                                let max = 0.0
-                                if (index == 0) {
-                                    min = 0
-                                    max = parseFloat(period.meta.replace('s', ''))
-                                } else {
-                                    min = parseFloat(arrOfLocalImgs[index - 1].meta.replace('s', ''))
-                                    max = parseFloat(period.meta.replace('s', ''))
-
-                                }
-
-                                per0 = Math.random() * (max - min) + min
+                                per0 = parseFloat(imageFile.startTime.replace('s', ''))
 
                                 per1 = per0 + Math.random() * (4 - 2) + 2
 

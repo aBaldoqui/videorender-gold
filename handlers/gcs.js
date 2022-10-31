@@ -2,7 +2,7 @@ const { Storage } = require('@google-cloud/storage')
 const bucketName = "audios-videomaker";
 
 const storage = new Storage({
-    keyFilename: './keys/videomaker-363718-81397a0178d7.json'
+    keyFilename: './keys/videomaker-363718-b826302fb4fe.json'
 })
 
 async function contentDownloader(filename) {
