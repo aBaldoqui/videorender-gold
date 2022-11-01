@@ -5,7 +5,7 @@ const { getVideoDurationInSeconds } = require('get-video-duration')
 
 //https://ae-scripting.docsforadobe.dev/other/importoptions.html#importoptions
 
-async function index(contentObj, audioFileName, arrOfLocalImgs, bg) {
+async function index(contentObj, audioFileName, arrOfLocalImgs, bg, vidBg) {
     try {
         console.log(arrOfLocalImgs)
 
@@ -15,21 +15,31 @@ async function index(contentObj, audioFileName, arrOfLocalImgs, bg) {
 
         console.log('inciando ae')
 
-        ae.execute((contentObj, audioFileName, videoDuration, arrOfLocalImgs, backgroundFile) => {
+        ae.execute((contentObj, audioFileName, videoDuration, arrOfLocalImgs, backgroundFile, vidBg) => {
             try {
                 const audioFile = `~/Documents/dev/videorender-gold/tmp/${audioFileName.filename}`;
+
                 const projectName = contentObj.vidName;
                 const outputFolder = "~/Desktop";
                 const importAudioOptions = new ImportOptions();
 
                 const comp = app.project.items.addComp(projectName, 1920, 1080, 1, videoDuration, 60);
 
+                if (vidBg) {
+                    const vidFile = `~/Documents/dev/videorender-gold/tmp/${vidBg.filename}`;
+                    const bgvideo = app.project.importFile(new ImportOptions(new File(vidFile)));
+                    comp.layers.add(bgvideo);
+
+                } else {
+                    const background = app.project.importFile(new ImportOptions(new File(backgroundFile)))
+                    comp.layers.add(background);
+                }
+
                 importAudioOptions.file = new File(audioFile);
 
                 const audio = app.project.importFile(importAudioOptions);
 
-                const background = app.project.importFile(new ImportOptions(new File(backgroundFile)))
-                comp.layers.add(background);
+
 
                 let index = 0
                 arrOfLocalImgs.forEach(period => {
@@ -47,7 +57,7 @@ async function index(contentObj, audioFileName, arrOfLocalImgs, bg) {
                                 const newLayer = comp.layers.add(img)
 
                                 let per0;
-                                let per1;                              
+                                let per1;
 
                                 per0 = parseFloat(imageFile.startTime.replace('s', ''))
 
@@ -80,7 +90,7 @@ async function index(contentObj, audioFileName, arrOfLocalImgs, bg) {
                 alert(err)
             }
 
-        }, contentObj, audioFileName, videoDuration, arrOfLocalImgs, backgroundFile);
+        }, contentObj, audioFileName, videoDuration, arrOfLocalImgs, backgroundFile, vidBg);
     } catch (err) {
         console.log(err)
     }

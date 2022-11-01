@@ -2,6 +2,7 @@ const fs = require('fs');
 const ytdl = require('ytdl-core');
 const path = require('path');
 const sharp = require('sharp');
+const ffmpeg = require('fluent-ffmpeg')
 
 const download = require('image-downloader');
 let index = 0;
@@ -68,7 +69,7 @@ async function imgDownloader(content) {
                             .resize(960, 540)
                             .toFile(downloadedImg.filename.replace('original', 'converted'), (err, info) => {
                                 if (err) { console.log('error', period.meta) } else {
-                                    const resObj = { filename: downloadedImg.filename.replace('original', 'converted'), startTime : image.startTime}
+                                    const resObj = { filename: downloadedImg.filename.replace('original', 'converted'), startTime: image.startTime }
                                     resArr.push(resObj)
                                 }
                             });
@@ -84,6 +85,31 @@ async function imgDownloader(content) {
         })
     }))
 }
+
+async function videoDld(url) {
+    const path = './tmp/'
+    try {
+        const info = await ytdl.getInfo(url)
+        const filenameTofix = `${info.videoDetails.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-toFix.mp4`
+        const filepath = path + filenameTofix
+        const download = ytdl(url, { quality: 'highest' })
+            .pipe(fs.createWriteStream(filepath));
+
+        const filename = `${info.videoDetails.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.mp4`
+
+
+
+        return new Promise((resolve) => {
+            download.on("finish", () => {
+                ffmpeg(filepath).size('1920x1080').output(`./tmp/${filename}`).on('end', ()=>{resolve({ filepath, filename })}).run()               
+            })
+        })
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 
 async function audioDld(url) {
     const path = './tmp/'
@@ -105,4 +131,4 @@ async function audioDld(url) {
 
 
 
-module.exports = { audioDld, imgDownloader }
+module.exports = { audioDld, imgDownloader, videoDld }
